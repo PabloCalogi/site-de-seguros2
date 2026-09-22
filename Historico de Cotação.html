@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Varginha Seguros - Histórico de Cotações</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
+        body { background-color: #f4f7fe; display: flex; min-height: 100vh; color: #1b2559; }
+
+        /* --- Sidebar --- */
+        .sidebar { width: 260px; background-color: #0b1437; color: #fff; display: flex; flex-direction: column; padding: 2rem 1.5rem; flex-shrink: 0; }
+        .brand { display: flex; align-items: center; gap: 10px; margin-bottom: 3rem; padding-left: 10px; }
+        .brand i { font-size: 1.8rem; }
+        .brand h2 { font-size: 1.2rem; line-height: 1; }
+        .brand span { font-size: 0.7rem; color: #a3aed0; letter-spacing: 1px; }
+        .nav-links { list-style: none; display: flex; flex-direction: column; gap: 0.5rem; flex: 1; }
+        .nav-links li a { color: #a3aed0; text-decoration: none; display: flex; align-items: center; gap: 15px; padding: 12px 15px; border-radius: 8px; font-weight: 500; transition: all 0.3s; }
+        .nav-links li a:hover, .nav-links li.active a { background-color: #1b2559; color: #ffffff; }
+        .nav-links li.active a { background-color: #4318ff; }
+        .logout { margin-top: auto; }
+
+        /* --- Main Content --- */
+        .main-content { flex: 1; padding: 2rem 3rem; overflow-y: auto; }
+        .content-wrapper { width: 100%; max-width: 1100px; margin: 0 auto; }
+        .page-title { font-size: 1.2rem; color: #1b2559; font-weight: 700; text-transform: uppercase; margin-bottom: 1.5rem; }
+
+        /* --- Filtros de Busca --- */
+        .filters-bar {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            align-items: center;
+        }
+
+        .search-box {
+            flex: 1;
+            position: relative;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 0.8rem 1rem 0.8rem 2.5rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            background: #fff;
+            outline: none;
+            color: #2b3674;
+        }
+
+        .search-box input::placeholder { color: #a3aed0; }
+        .search-box i {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #a3aed0;
+        }
+
+        .filter-box {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: #fff;
+            border: 1px solid #e2e8f0;
+            padding: 0.8rem 1.2rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #2b3674;
+            cursor: pointer;
+        }
+
+        .filter-box select {
+            border: none;
+            outline: none;
+            background: transparent;
+            font-size: 0.9rem;
+            color: #2b3674;
+            cursor: pointer;
+        }
+
+        /* --- Card da Tabela --- */
+        .history-card { background: #fff; border-radius: 16px; padding: 1.5rem; box-shadow: 0 4px 15px rgba(0,0,0,0.02); width: 100%; }
+
+        /* --- Tabela --- */
+        .history-table { width: 100%; border-collapse: collapse; }
+        .history-table th { 
+            text-align: left; 
+            padding: 1rem; 
+            font-size: 0.85rem; 
+            color: #2b3674; 
+            font-weight: 700; 
+            border-bottom: 1px solid #e2e8f0; 
+        }
+        .history-table td { 
+            padding: 1.1rem 1rem; 
+            font-size: 0.9rem; 
+            color: #2b3674; 
+            font-weight: 500;
+            border-bottom: 1px solid #f1f5f9; 
+            vertical-align: middle;
+        }
+        .history-table tr:last-child td { border-bottom: none; }
+        .history-table tr:hover td { background-color: #f8fafc; }
+
+        /* Badges de Status */
+        .badge {
+            padding: 5px 14px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            display: inline-block;
+        }
+        .badge.concluida { background-color: #e6fcf5; color: #05cd99; }
+        .badge.andamento { background-color: #fff8e1; color: #ff9800; }
+
+        /* Botão de Ação (Visualizar) */
+        .btn-action {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: 1px solid #e2e8f0;
+            background: #fff;
+            color: #4318ff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .btn-action:hover { background: #f4f7fe; border-color: #4318ff; }
+
+        /* Link Ver Mais */
+        .load-more {
+            text-align: center;
+            margin-top: 1.5rem;
+        }
+        .load-more a {
+            color: #0047cc;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+        .load-more a:hover { text-decoration: underline; }
+
+        /* Responsividade */
+        @media (max-width: 900px) {
+            .filters-bar { flex-direction: column; }
+            .history-table { display: block; overflow-x: auto; white-space: nowrap; }
+        }
+    </style>
+</head>
+<body>
+
+    <aside class="sidebar">
+        <div class="brand">
+            <i class="fa-solid fa-shield-halved"></i>
+            <div>
+                <h2>VARGINHA</h2>
+                <span>SEGUROS</span>
+            </div>
+        </div>
+        <ul class="nav-links">
+            <li><a href="#"><i class="fa-solid fa-house"></i> Dashboard</a></li>
+            <li><a href="#"><i class="fa-solid fa-plus"></i> Nova Cotação</a></li>
+            <li class="active"><a href="#"><i class="fa-solid fa-file-invoice-dollar"></i> Cotações</a></li>
+            <li><a href="#"><i class="fa-solid fa-users"></i> Clientes</a></li>
+            <li><a href="#"><i class="fa-solid fa-building-shield"></i> Seguradoras</a></li>
+            <li><a href="#"><i class="fa-solid fa-chart-pie"></i> Relatórios</a></li>
+            <li><a href="#"><i class="fa-solid fa-user-tie"></i> Usuários</a></li>
+            <li><a href="#"><i class="fa-solid fa-gear"></i> Configurações</a></li>
+            <li class="logout"><a href="#"><i class="fa-solid fa-arrow-right-from-bracket"></i> Sair</a></li>
+        </ul>
+    </aside>
+
+    <main class="main-content">
+        <div class="content-wrapper">
+            
+            <h1 class="page-title">Histórico de Cotações</h1>
+
+            <!-- Barra de Filtros -->
+            <div class="filters-bar">
+                <div class="search-box">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" placeholder="Buscar por cliente, placa ou protocolo...">
+                </div>
+                <div class="filter-box">
+                    <span style="color: #a3aed0; font-weight: 500;">Período:</span>
+                    <select>
+                        <option value="todos" selected>Todos</option>
+                        <option value="mes">Este Mês</option>
+                        <option value="ano">Este Ano</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Card com a Tabela de Histórico -->
+            <div class="history-card">
+                <table class="history-table">
+                    <thead>
+                        <tr>
+                            <th>Protocolo</th>
+                            <th>Cliente</th>
+                            <th>Veículo</th>
+                            <th>Data</th>
+                            <th>Melhor Valor</th>
+                            <th>Status</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="font-weight: 600;">#COT12345</td>
+                            <td>João da Silva</td>
+                            <td>Corolla XEi</td>
+                            <td style="color: #a3aed0;">15/06/2024</td>
+                            <td style="font-weight: 700;">R$ 2.850,00</td>
+                            <td><span class="badge concluida">Concluída</span></td>
+                            <td><button class="btn-action"><i class="fa-solid fa-eye"></i></button></td>
+                        </tr>
+                        <tr>
+                            <td style="font-weight: 600;">#COT12344</td>
+                            <td>Maria Oliveira</td>
+                            <td>HB20</td>
+                            <td style="color: #a3aed0;">15/06/2024</td>
+                            <td style="font-weight: 700;">R$ 2.520,00</td>
+                            <td><span class="badge concluida">Concluída</span></td>
+                            <td><button class="btn-action"><i class="fa-solid fa-eye"></i></button></td>
+                        </tr>
+                        <tr>
+                            <td style="font-weight: 600;">#COT12343</td>
+                            <td>Pedro Santos</td>
+                            <td>Compass</td>
+                            <td style="color: #a3aed0;">14/06/2024</td>
+                            <td style="font-weight: 700;">R$ 3.150,00</td>
+                            <td><span class="badge andamento">Em andamento</span></td>
+                            <td><button class="btn-action"><i class="fa-solid fa-eye"></i></button></td>
+                        </tr>
+                        <tr>
+                            <td style="font-weight: 600;">#COT12342</td>
+                            <td>Ana Paula</td>
+                            <td>Onix</td>
+                            <td style="color: #a3aed0;">14/06/2024</td>
+                            <td style="font-weight: 700;">R$ 2.480,00</td>
+                            <td><span class="badge concluida">Concluída</span></td>
+                            <td><button class="btn-action"><i class="fa-solid fa-eye"></i></button></td>
+                        </tr>
+                        <tr>
+                            <td style="font-weight: 600;">#COT12341</td>
+                            <td>Carlos Eduardo</td>
+                            <td>Toro</td>
+                            <td style="color: #a3aed0;">14/06/2024</td>
+                            <td style="font-weight: 700;">R$ 3.780,00</td>
+                            <td><span class="badge concluida">Concluída</span></td>
+                            <td><button class="btn-action"><i class="fa-solid fa-eye"></i></button></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="load-more">
+                    <a href="#">Ver mais</a>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+</body>
+</html>

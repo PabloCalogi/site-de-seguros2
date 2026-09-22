@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Varginha Seguros - Clientes</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
+        body { background-color: #f4f7fe; display: flex; min-height: 100vh; color: #1b2559; }
+
+        /* --- Sidebar --- */
+        .sidebar { width: 260px; background-color: #0b1437; color: #fff; display: flex; flex-direction: column; padding: 2rem 1.5rem; flex-shrink: 0; }
+        .brand { display: flex; align-items: center; gap: 10px; margin-bottom: 3rem; padding-left: 10px; }
+        .brand i { font-size: 1.8rem; }
+        .brand h2 { font-size: 1.2rem; line-height: 1; }
+        .brand span { font-size: 0.7rem; color: #a3aed0; letter-spacing: 1px; }
+        .nav-links { list-style: none; display: flex; flex-direction: column; gap: 0.5rem; flex: 1; }
+        .nav-links li a { color: #a3aed0; text-decoration: none; display: flex; align-items: center; gap: 15px; padding: 12px 15px; border-radius: 8px; font-weight: 500; transition: all 0.3s; }
+        .nav-links li a:hover, .nav-links li.active a { background-color: #1b2559; color: #ffffff; }
+        .nav-links li.active a { background-color: #4318ff; }
+        .logout { margin-top: auto; }
+
+        /* --- Main Content --- */
+        .main-content { flex: 1; padding: 2rem 3rem; overflow-y: auto; }
+        .content-wrapper { width: 100%; max-width: 1100px; margin: 0 auto; }
+        .page-title { font-size: 1.2rem; color: #1b2559; font-weight: 700; text-transform: uppercase; margin-bottom: 1.5rem; }
+
+        /* --- Top Action Bar --- */
+        .action-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            gap: 1rem;
+        }
+
+        .search-box {
+            flex: 1;
+            max-width: 450px;
+            position: relative;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 0.8rem 1rem 0.8rem 2.5rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            background: #fff;
+            outline: none;
+            color: #2b3674;
+        }
+
+        .search-box input::placeholder { color: #a3aed0; }
+        .search-box i {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #a3aed0;
+        }
+
+        .btn-primary {
+            background-color: #0047cc;
+            color: #fff;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: 0.3s;
+        }
+        .btn-primary:hover { background-color: #003399; }
+
+        /* --- Card da Tabela --- */
+        .clients-card { background: #fff; border-radius: 16px; padding: 1.5rem; box-shadow: 0 4px 15px rgba(0,0,0,0.02); width: 100%; }
+
+        /* --- Tabela --- */
+        .clients-table { width: 100%; border-collapse: collapse; }
+        .clients-table th { 
+            text-align: left; 
+            padding: 1rem; 
+            font-size: 0.85rem; 
+            color: #2b3674; 
+            font-weight: 700; 
+            border-bottom: 1px solid #e2e8f0; 
+        }
+        .clients-table td { 
+            padding: 1.1rem 1rem; 
+            font-size: 0.9rem; 
+            color: #2b3674; 
+            font-weight: 500;
+            border-bottom: 1px solid #f1f5f9; 
+            vertical-align: middle;
+        }
+        .clients-table tr:last-child td { border-bottom: none; }
+        .clients-table tr:hover td { background-color: #f8fafc; }
+
+        /* Ícones de Ação */
+        .action-btns {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn-icon {
+            background: transparent;
+            border: none;
+            color: #64748b;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .btn-icon:hover { color: #0047cc; }
+        .btn-icon.delete:hover { color: #dc2626; }
+
+        /* Link Ver Mais */
+        .load-more {
+            text-align: center;
+            margin-top: 1.5rem;
+        }
+        .load-more a {
+            color: #0047cc;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+        .load-more a:hover { text-decoration: underline; }
+
+        /* Responsividade */
+        @media (max-width: 900px) {
+            .action-bar { flex-direction: column; align-items: stretch; }
+            .search-box { max-width: 100%; }
+            .clients-table { display: block; overflow-x: auto; white-space: nowrap; }
+        }
+    </style>
+</head>
+<body>
+
+    <aside class="sidebar">
+        <div class="brand">
+            <i class="fa-solid fa-shield-halved"></i>
+            <div>
+                <h2>VARGINHA</h2>
+                <span>SEGUROS</span>
+            </div>
+        </div>
+        <ul class="nav-links">
+            <li><a href="#"><i class="fa-solid fa-house"></i> Dashboard</a></li>
+            <li><a href="#"><i class="fa-solid fa-plus"></i> Nova Cotação</a></li>
+            <li><a href="#"><i class="fa-solid fa-file-invoice-dollar"></i> Cotações</a></li>
+            <li class="active"><a href="#"><i class="fa-solid fa-users"></i> Clientes</a></li>
+            <li><a href="#"><i class="fa-solid fa-building-shield"></i> Seguradoras</a></li>
+            <li><a href="#"><i class="fa-solid fa-chart-pie"></i> Relatórios</a></li>
+            <li><a href="#"><i class="fa-solid fa-user-tie"></i> Usuários</a></li>
+            <li><a href="#"><i class="fa-solid fa-gear"></i> Configurações</a></li>
+            <li class="logout"><a href="#"><i class="fa-solid fa-arrow-right-from-bracket"></i> Sair</a></li>
+        </ul>
+    </aside>
+
+    <main class="main-content">
+        <div class="content-wrapper">
+            
+            <h1 class="page-title">Clientes</h1>
+
+            <!-- Barra de Ações (Busca e Novo Cliente) -->
+            <div class="action-bar">
+                <div class="search-box">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" placeholder="Buscar cliente...">
+                </div>
+                <button class="btn-primary">
+                    <i class="fa-solid fa-plus"></i> Novo Cliente
+                </button>
+            </div>
+
+            <!-- Card com a Tabela de Clientes -->
+            <div class="clients-card">
+                <table class="clients-table">
+                    <thead>
+                        <tr>
+                            <th>Nome</th>
+                            <th>CPF / CNPJ</th>
+                            <th>Telefone</th>
+                            <th>E-mail</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="font-weight: 600;">João da Silva</td>
+                            <td>123.456.789-00</td>
+                            <td>(35) 99999-9999</td>
+                            <td>joao@email.com</td>
+                            <td>
+                                <div class="action-btns">
+                                    <button class="btn-icon" title="Editar"><i class="fa-solid fa-pen"></i></button>
+                                    <button class="btn-icon delete" title="Excluir"><i class="fa-solid fa-trash"></i></button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="font-weight: 600;">Maria Oliveira</td>
+                            <td>987.654.321-00</td>
+                            <td>(35) 98888-8888</td>
+                            <td>maria@email.com</td>
+                            <td>
+                                <div class="action-btns">
+                                    <button class="btn-icon" title="Editar"><i class="fa-solid fa-pen"></i></button>
+                                    <button class="btn-icon delete" title="Excluir"><i class="fa-solid fa-trash"></i></button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="font-weight: 600;">Pedro Santos</td>
+                            <td>456.789.123-00</td>
+                            <td>(35) 97777-7777</td>
+                            <td>pedro@email.com</td>
+                            <td>
+                                <div class="action-btns">
+                                    <button class="btn-icon" title="Editar"><i class="fa-solid fa-pen"></i></button>
+                                    <button class="btn-icon delete" title="Excluir"><i class="fa-solid fa-trash"></i></button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="font-weight: 600;">Ana Paula</td>
+                            <td>321.654.987-00</td>
+                            <td>(35) 96666-6666</td>
+                            <td>ana@email.com</td>
+                            <td>
+                                <div class="action-btns">
+                                    <button class="btn-icon" title="Editar"><i class="fa-solid fa-pen"></i></button>
+                                    <button class="btn-icon delete" title="Excluir"><i class="fa-solid fa-trash"></i></button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="font-weight: 600;">Carlos Eduardo</td>
+                            <td>159.357.456-00</td>
+                            <td>(35) 95555-5555</td>
+                            <td>carlos@email.com</td>
+                            <td>
+                                <div class="action-btns">
+                                    <button class="btn-icon" title="Editar"><i class="fa-solid fa-pen"></i></button>
+                                    <button class="btn-icon delete" title="Excluir"><i class="fa-solid fa-trash"></i></button>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="load-more">
+                    <a href="#">Ver mais</a>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+</body>
+</html>

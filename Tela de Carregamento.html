@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Varginha Seguros - Processando Cotações</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: #f8fafc;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: #1b2559;
+            position: relative;
+        }
+
+        /* --- Header Topo Esquerdo --- */
+        .header-title {
+            position: absolute;
+            top: 30px;
+            left: 40px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #2b3674;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* --- Container Principal --- */
+        .loading-container {
+            width: 100%;
+            max-width: 600px;
+            text-align: center;
+            padding: 2rem;
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
+            border: 1px solid #f1f5f9;
+        }
+
+        /* --- Textos --- */
+        .loading-container h1 {
+            font-size: 1.6rem;
+            color: #1b2559;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        .loading-container p {
+            font-size: 0.95rem;
+            color: #64748b;
+            line-height: 1.5;
+            margin-bottom: 3rem;
+        }
+
+        /* --- Ilustração Animada --- */
+        .illustration-box {
+            position: relative;
+            height: 180px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 3rem;
+        }
+
+        .icon-cloud {
+            font-size: 8rem;
+            color: #e2e8f0;
+            position: absolute;
+            z-index: 1;
+            animation: float 4s ease-in-out infinite;
+        }
+
+        .icon-server {
+            font-size: 5rem;
+            color: #0047cc;
+            position: relative;
+            z-index: 2;
+        }
+
+        .icon-shield {
+            font-size: 3rem;
+            color: #05cd99;
+            position: absolute;
+            bottom: 20px;
+            right: 150px;
+            z-index: 3;
+            animation: bounce 2s infinite;
+        }
+
+        .icon-file {
+            font-size: 3rem;
+            color: #4318ff;
+            position: absolute;
+            bottom: 20px;
+            left: 150px;
+            z-index: 3;
+            animation: pulse 1.5s infinite;
+        }
+
+        /* Animações CSS */
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); }
+            100% { transform: translateY(0px); }
+        }
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        /* --- Progress Bar --- */
+        .progress-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 1rem;
+        }
+
+        .progress-track {
+            flex: 1;
+            height: 12px;
+            background-color: #e2e8f0;
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-fill {
+            height: 100%;
+            width: 0%; /* Controlado pelo JS */
+            background: linear-gradient(90deg, #0047cc, #4318ff);
+            border-radius: 10px;
+            transition: width 0.4s ease;
+        }
+
+        .progress-percentage {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #1b2559;
+            width: 45px;
+            text-align: right;
+        }
+
+        .status-text {
+            font-size: 0.9rem;
+            color: #64748b;
+            font-weight: 500;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="header-title">
+        PROCESSANDO COTAÇÕES
+    </div>
+
+    <div class="loading-container">
+        <h1>Buscando as melhores cotações para você...</h1>
+        <p>Estamos enviando suas informações para as seguradoras parceiras.<br>Isso pode levar alguns segundos.</p>
+
+        <!-- Ilustração Feita com Ícones Animados -->
+        <div class="illustration-box">
+            <i class="fa-solid fa-cloud icon-cloud"></i>
+            <i class="fa-solid fa-server icon-server"></i>
+            <i class="fa-solid fa-shield-halved icon-shield"></i>
+            <i class="fa-solid fa-file-invoice-dollar icon-file"></i>
+        </div>
+
+        <!-- Barra de Progresso e Status -->
+        <div class="progress-wrapper">
+            <div class="progress-track">
+                <div class="progress-fill" id="progress-bar"></div>
+            </div>
+            <div class="progress-percentage" id="percentage-text">0%</div>
+        </div>
+        
+        <div class="status-text" id="status-text">
+            Iniciando comunicação com os servidores...
+        </div>
+    </div>
+
+    <script>
+        // Lógica Interativa da Tela de Carregamento
+        const progressBar = document.getElementById('progress-bar');
+        const percentageText = document.getElementById('percentage-text');
+        const statusText = document.getElementById('status-text');
+
+        let progress = 0;
+
+        // Fases de status baseadas na porcentagem
+        const statusMessages = [
+            { limit: 15, text: "Validando dados do veículo e do cliente..." },
+            { limit: 35, text: "Consultando Seguradora A..." },
+            { limit: 55, text: "Consultando Seguradora B..." },
+            { limit: 75, text: "Consultando Seguradora C..." },
+            { limit: 90, text: "Organizando e ranqueando as melhores ofertas..." },
+            { limit: 100, text: "Finalizando processo..." }
+        ];
+
+        // Função que simula o carregamento
+        const loadingInterval = setInterval(() => {
+            // Incremento aleatório entre 1 e 4 para parecer orgânico
+            const increment = Math.floor(Math.random() * 4) + 1;
+            progress += increment;
+
+            if (progress >= 100) {
+                progress = 100;
+                clearInterval(loadingInterval);
+                
+                // Simula o redirecionamento após chegar em 100%
+                setTimeout(() => {
+                    alert("Cotações processadas com sucesso! Redirecionando para a tela de resultados...");
+                    // window.location.href = "resultados.html"; // Descomente para navegação real
+                }, 800);
+            }
+
+            // Atualiza a interface
+            progressBar.style.width = `${progress}%`;
+            percentageText.textContent = `${progress}%`;
+
+            // Atualiza o texto de status
+            const currentStatus = statusMessages.find(msg => progress <= msg.limit);
+            if (currentStatus) {
+                statusText.textContent = currentStatus.text;
+            }
+
+        }, 200); // Atualiza a cada 200ms
+    </script>
+</body>
+</html>

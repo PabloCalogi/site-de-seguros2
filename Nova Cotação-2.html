@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Varginha Seguros - Nova Cotação (Veículo)</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
+        body { background-color: #f4f7fe; display: flex; min-height: 100vh; color: #1b2559; }
+
+        /* --- Sidebar --- */
+        .sidebar { width: 260px; background-color: #0b1437; color: #fff; display: flex; flex-direction: column; padding: 2rem 1.5rem; flex-shrink: 0; }
+        .brand { display: flex; align-items: center; gap: 10px; margin-bottom: 3rem; padding-left: 10px; }
+        .brand i { font-size: 1.8rem; }
+        .brand h2 { font-size: 1.2rem; line-height: 1; }
+        .brand span { font-size: 0.7rem; color: #a3aed0; letter-spacing: 1px; }
+        .nav-links { list-style: none; display: flex; flex-direction: column; gap: 0.5rem; flex: 1; }
+        .nav-links li a { color: #a3aed0; text-decoration: none; display: flex; align-items: center; gap: 15px; padding: 12px 15px; border-radius: 8px; font-weight: 500; transition: all 0.3s; }
+        .nav-links li a:hover, .nav-links li.active a { background-color: #1b2559; color: #ffffff; }
+        .nav-links li.active a { background-color: #4318ff; }
+        .logout { margin-top: auto; }
+
+        /* --- Main Content --- */
+        .main-content { flex: 1; padding: 2rem 3rem; overflow-y: auto; }
+        .content-wrapper { width: 100%; max-width: 900px; margin: 0 auto; }
+        .page-title { font-size: 1.2rem; color: #1b2559; margin-bottom: 2rem; font-weight: 700; text-transform: uppercase; }
+
+        /* --- Wizard Card --- */
+        .wizard-card { background: #fff; border-radius: 16px; padding: 2.5rem; box-shadow: 0 4px 15px rgba(0,0,0,0.02); width: 100%; }
+
+        /* --- Progress Bar --- */
+        .stepper-wrapper { display: flex; justify-content: space-between; margin-bottom: 3rem; position: relative; padding: 0 20px; }
+        .stepper-wrapper::before { content: ''; position: absolute; top: 15px; left: 5%; width: 90%; height: 2px; background: #e2e8f0; z-index: 1; }
+        .stepper-item { position: relative; z-index: 2; display: flex; flex-direction: column; align-items: center; gap: 8px; }
+        .step-counter { width: 32px; height: 32px; border-radius: 50%; background: #fff; border: 2px solid #e2e8f0; display: flex; justify-content: center; align-items: center; font-size: 0.9rem; font-weight: 600; color: #a3aed0; transition: 0.3s; }
+        .stepper-item.active .step-counter { background: #0047cc; border-color: #0047cc; color: #fff; }
+        .stepper-item.active .step-name { color: #0047cc; }
+        .stepper-item.completed .step-counter { border-color: #0047cc; color: #0047cc; background: #fff; }
+        .step-name { font-size: 0.85rem; font-weight: 600; color: #a3aed0; }
+
+        /* --- Formulário --- */
+        .section-title { font-size: 1.1rem; color: #1b2559; margin-bottom: 1.5rem; font-weight: 700; }
+        .form-grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 1.2rem; margin-bottom: 2rem; }
+        .input-group { display: flex; flex-direction: column; gap: 6px; }
+        .input-group label { font-size: 0.85rem; font-weight: 600; color: #2b3674; }
+        .input-group input, .input-group select { width: 100%; padding: 0.8rem 1rem; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 0.95rem; outline: none; color: #2b3674; transition: 0.3s; appearance: none; background-color: #fff; }
+        .input-group select:disabled { background-color: #f8f9fa; color: #a3aed0; cursor: not-allowed; }
+        .select-wrapper { position: relative; }
+        .select-wrapper::after { content: '\f107'; font-family: 'Font Awesome 6 Free'; font-weight: 900; position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: #a3aed0; pointer-events: none; }
+        .input-group input:focus, .input-group select:focus { border-color: #0047cc; }
+        .input-group input::placeholder { color: #a3aed0; }
+        .input-icon-wrapper { position: relative; }
+        .input-icon-wrapper i { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: #a3aed0; }
+
+        /* Radio Buttons */
+        .radio-container { display: flex; gap: 10px; height: 100%; align-items: center; }
+        .radio-option { display: flex; align-items: center; gap: 8px; padding: 0.6rem 1.2rem; border-radius: 20px; cursor: pointer; border: 1px solid transparent; transition: 0.3s; }
+        .radio-option input[type="radio"] { display: none; }
+        .radio-custom { width: 18px; height: 18px; border-radius: 50%; border: 2px solid #a3aed0; display: flex; justify-content: center; align-items: center; }
+        .radio-option input[type="radio"]:checked + .radio-custom { border-color: #0047cc; }
+        .radio-option input[type="radio"]:checked + .radio-custom::after { content: ''; width: 10px; height: 10px; background: #0047cc; border-radius: 50%; }
+        .radio-option:has(input[type="radio"]:checked) { background-color: #eef2ff; border-color: #eef2ff; }
+        .radio-option span { font-size: 0.95rem; color: #2b3674; font-weight: 500; }
+
+        .col-4 { grid-column: span 4; } 
+
+        /* --- Botões --- */
+        .actions { display: flex; justify-content: space-between; margin-top: 1rem; }
+        .btn { padding: 0.8rem 2.5rem; border-radius: 6px; font-weight: 600; font-size: 0.95rem; cursor: pointer; transition: 0.3s; border: none; }
+        .btn-cancel { background: #fff; color: #0047cc; border: 1px solid #e2e8f0; }
+        .btn-cancel:hover { background: #f4f7fe; }
+        .btn-next { background: #0047cc; color: #fff; }
+        .btn-next:hover { background: #003399; }
+
+        @media (max-width: 900px) { .col-4 { grid-column: span 12; } }
+    </style>
+</head>
+<body>
+
+    <aside class="sidebar">
+        <div class="brand">
+            <i class="fa-solid fa-shield-halved"></i>
+            <div>
+                <h2>VARGINHA</h2>
+                <span>SEGUROS</span>
+            </div>
+        </div>
+        <ul class="nav-links">
+            <li><a href="#"><i class="fa-solid fa-house"></i> Dashboard</a></li>
+            <li class="active"><a href="#"><i class="fa-solid fa-plus"></i> Nova Cotação</a></li>
+            <li><a href="#"><i class="fa-solid fa-file-invoice-dollar"></i> Cotações</a></li>
+            <li><a href="#"><i class="fa-solid fa-users"></i> Clientes</a></li>
+            <li><a href="#"><i class="fa-solid fa-building-shield"></i> Seguradoras</a></li>
+            <li><a href="#"><i class="fa-solid fa-chart-pie"></i> Relatórios</a></li>
+            <li><a href="#"><i class="fa-solid fa-user-tie"></i> Usuários</a></li>
+            <li><a href="#"><i class="fa-solid fa-gear"></i> Configurações</a></li>
+            <li class="logout"><a href="#"><i class="fa-solid fa-arrow-right-from-bracket"></i> Sair</a></li>
+        </ul>
+    </aside>
+
+    <main class="main-content">
+        <div class="content-wrapper">
+            
+            <h1 class="page-title">NOVA COTAÇÃO - DADOS DO VEÍCULO</h1>
+
+            <div class="wizard-card">
+                
+                <div class="stepper-wrapper">
+                    <div class="stepper-item completed">
+                        <div class="step-counter"><i class="fa-solid fa-check"></i></div>
+                        <div class="step-name">Cliente</div>
+                    </div>
+                    <div class="stepper-item active">
+                        <div class="step-counter">2</div>
+                        <div class="step-name">Veículo</div>
+                    </div>
+                    <div class="stepper-item">
+                        <div class="step-counter">3</div>
+                        <div class="step-name">Coberturas</div>
+                    </div>
+                    <div class="stepper-item">
+                        <div class="step-counter">4</div>
+                        <div class="step-name">Resumo</div>
+                    </div>
+                </div>
+
+                <form action="#">
+                    <h2 class="section-title">Dados do Veículo</h2>
+                    
+                    <div class="form-grid">
+                        
+                        <div class="input-group col-4">
+                            <label>Placa</label>
+                            <input type="text" placeholder="ABC1D23" data-mask="placa" maxlength="7">
+                        </div>
+                        <div class="input-group col-4">
+                            <label>Marca</label>
+                            <div class="select-wrapper">
+                                <select>
+                                    <option value="">Selecione</option>
+                                    <option value="VW" selected>Volkswagen</option>
+                                    <option value="FIAT">Fiat</option>
+                                    <option value="GM">Chevrolet</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="input-group col-4">
+                            <label>Modelo</label>
+                            <div class="select-wrapper">
+                                <select>
+                                    <option value="">Selecione o modelo</option>
+                                    <option value="TCROSS" selected>T-Cross</option>
+                                    <option value="NIVUS">Nivus</option>
+                                    <option value="POLO">Polo</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Campos dinâmicos de ano -->
+                        <div class="input-group col-4">
+                            <label>Ano de Fabricação</label>
+                            <div class="select-wrapper">
+                                <select id="ano-fabricacao">
+                                    <option value="">Selecione</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="input-group col-4">
+                            <label>Ano do Modelo</label>
+                            <div class="select-wrapper">
+                                <select id="ano-modelo" disabled>
+                                    <option value="">Selecione a fabricação primeiro</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="input-group col-4">
+                            <label>Combustível</label>
+                            <div class="select-wrapper">
+                                <select>
+                                    <option value="FLEX" selected>Flex</option>
+                                    <option value="GASOLINA">Gasolina</option>
+                                    <option value="ELETRICO">Elétrico</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="input-group col-4">
+                            <label>Tipo de Uso</label>
+                            <div class="select-wrapper">
+                                <select>
+                                    <option value="PARTICULAR" selected>Particular</option>
+                                    <option value="APP">Aplicativo (Uber/99)</option>
+                                    <option value="COMERCIAL">Comercial</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="input-group col-4">
+                            <label>CEP de Pernoite</label>
+                            <div class="input-icon-wrapper">
+                                <input type="text" placeholder="00000-000" data-mask="cep" maxlength="9">
+                                <i class="fa-solid fa-magnifying-glass"></i>
+                            </div>
+                        </div>
+                        <div class="input-group col-4">
+                            <label>Possui Garagem?</label>
+                            <div class="radio-container">
+                                <label class="radio-option">
+                                    <input type="radio" name="garagem" value="sim" checked>
+                                    <div class="radio-custom"></div>
+                                    <span>Sim</span>
+                                </label>
+                                <label class="radio-option">
+                                    <input type="radio" name="garagem" value="nao">
+                                    <div class="radio-custom"></div>
+                                    <span>Não</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="actions">
+                        <button type="button" class="btn btn-cancel">Voltar</button>
+                        <button type="button" class="btn btn-next">Próximo</button>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // --- 1. LÓGICA DINÂMICA PARA ANOS DE FABRICAÇÃO E MODELO ---
+        const selectFabricacao = document.getElementById('ano-fabricacao');
+        const selectModelo = document.getElementById('ano-modelo');
+
+        const anoAtual = new Date().getFullYear() + 1; 
+        const anoMinimo = 2000;
+
+        for (let ano = anoAtual; ano >= anoMinimo; ano--) {
+            const option = document.createElement('option');
+            option.value = ano;
+            option.textContent = ano;
+            selectFabricacao.appendChild(option);
+        }
+
+        selectFabricacao.addEventListener('change', function() {
+            selectModelo.innerHTML = ''; 
+            
+            if (this.value === "") {
+                selectModelo.innerHTML = '<option value="">Selecione a fabricação primeiro</option>';
+                selectModelo.disabled = true;
+                return;
+            }
+
+            const anoFab = parseInt(this.value);
+            selectModelo.disabled = false;
+
+            const opcoesModelo = [anoFab + 1, anoFab];
+
+            opcoesModelo.forEach(ano => {
+                const option = document.createElement('option');
+                option.value = ano;
+                option.textContent = ano;
+                selectModelo.appendChild(option);
+            });
+        });
+
+
+        // --- 2. LÓGICA DE MÁSCARAS ---
+        const masks = {
+            placa: (value) => {
+                return value
+                    .toUpperCase()
+                    .replace(/[^A-Z0-9]/g, '')
+                    .substring(0, 7);
+            },
+            cep: (value) => {
+                return value
+                    .replace(/\D/g, '')
+                    .replace(/^(\d{5})(\d)/, '$1-$2')
+                    .substring(0, 9);
+            },
+            cpfCnpj: (value) => {
+                value = value.replace(/\D/g, '');
+                if (value.length <= 11) {
+                    return value
+                        .replace(/(\d{3})(\d)/, '$1.$2')
+                        .replace(/(\d{3})(\d)/, '$1.$2')
+                        .replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+                } else {
+                    return value
+                        .replace(/^(\d{2})(\d)/, '$1.$2')
+                        .replace(/^(\d{2})\.(\d{3})(\d)/, '$1.$2.$3')
+                        .replace(/\.(\d{3})(\d)/, '.$1/$2')
+                        .replace(/(\d{4})(\d)/, '$1-$2')
+                        .substring(0, 18);
+                }
+            },
+            telefone: (value) => {
+                value = value.replace(/\D/g, '');
+                return value
+                    .replace(/^(\d{2})(\d)/g, '($1) $2')
+                    .replace(/(\d)(\d{4})$/, '$1-$2')
+                    .substring(0, 15);
+            },
+            data: (value) => {
+                value = value.replace(/\D/g, '');
+                return value
+                    .replace(/(\d{2})(\d)/, '$1/$2')
+                    .replace(/(\d{2})(\d)/, '$1/$2')
+                    .substring(0, 10);
+            }
+        };
+
+        document.querySelectorAll('input[data-mask]').forEach(input => {
+            input.addEventListener('input', (e) => {
+                const maskType = e.target.getAttribute('data-mask');
+                if (masks[maskType]) {
+                    e.target.value = masks[maskType](e.target.value);
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Varginha Seguros - Usuários</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
+        body { background-color: #f4f7fe; display: flex; min-height: 100vh; color: #1b2559; }
+
+        /* --- Sidebar --- */
+        .sidebar { width: 260px; background-color: #0b1437; color: #fff; display: flex; flex-direction: column; padding: 2rem 1.5rem; flex-shrink: 0; }
+        .brand { display: flex; align-items: center; gap: 10px; margin-bottom: 3rem; padding-left: 10px; }
+        .brand i { font-size: 1.8rem; }
+        .brand h2 { font-size: 1.2rem; line-height: 1; }
+        .brand span { font-size: 0.7rem; color: #a3aed0; letter-spacing: 1px; }
+        .nav-links { list-style: none; display: flex; flex-direction: column; gap: 0.5rem; flex: 1; }
+        .nav-links li a { color: #a3aed0; text-decoration: none; display: flex; align-items: center; gap: 15px; padding: 12px 15px; border-radius: 8px; font-weight: 500; transition: all 0.3s; }
+        .nav-links li a:hover, .nav-links li.active a { background-color: #1b2559; color: #ffffff; }
+        .nav-links li.active a { background-color: #4318ff; }
+        .logout { margin-top: auto; }
+
+        /* --- Main Content --- */
+        .main-content { flex: 1; padding: 2rem 3rem; overflow-y: auto; }
+        .content-wrapper { width: 100%; max-width: 1100px; margin: 0 auto; }
+        .page-title { font-size: 1.2rem; color: #1b2559; font-weight: 700; text-transform: uppercase; margin-bottom: 0; }
+
+        /* --- Top Action Bar --- */
+        .action-bar {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .btn-primary {
+            background-color: #0047cc;
+            color: #fff;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: 0.3s;
+        }
+        .btn-primary:hover { background-color: #003399; }
+
+        /* --- Card da Tabela --- */
+        .users-card { background: #fff; border-radius: 16px; padding: 1.5rem; box-shadow: 0 4px 15px rgba(0,0,0,0.02); width: 100%; }
+
+        /* --- Tabela --- */
+        .users-table { width: 100%; border-collapse: collapse; }
+        .users-table th { 
+            text-align: left; 
+            padding: 1rem; 
+            font-size: 0.85rem; 
+            color: #2b3674; 
+            font-weight: 700; 
+            border-bottom: 1px solid #e2e8f0; 
+        }
+        .users-table td { 
+            padding: 1.1rem 1rem; 
+            font-size: 0.9rem; 
+            color: #2b3674; 
+            font-weight: 500;
+            border-bottom: 1px solid #f1f5f9; 
+            vertical-align: middle;
+        }
+        .users-table tr:last-child td { border-bottom: none; }
+        .users-table tr:hover td { background-color: #f8fafc; }
+
+        /* Badges de Status */
+        .badge {
+            padding: 5px 14px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            display: inline-block;
+        }
+        .badge.ativa { background-color: #e6fcf5; color: #05cd99; }
+
+        /* Ícones de Ação */
+        .action-btns {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn-icon {
+            background: transparent;
+            border: none;
+            color: #64748b;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .btn-icon:hover { color: #0047cc; }
+        .btn-icon.delete:hover { color: #dc2626; }
+
+        /* Responsividade */
+        @media (max-width: 900px) {
+            .users-table { display: block; overflow-x: auto; white-space: nowrap; }
+        }
+    </style>
+</head>
+<body>
+
+    <aside class="sidebar">
+        <div class="brand">
+            <i class="fa-solid fa-shield-halved"></i>
+            <div>
+                <h2>VARGINHA</h2>
+                <span>SEGUROS</span>
+            </div>
+        </div>
+        <ul class="nav-links">
+            <li><a href="#"><i class="fa-solid fa-house"></i> Dashboard</a></li>
+            <li><a href="#"><i class="fa-solid fa-plus"></i> Nova Cotação</a></li>
+            <li><a href="#"><i class="fa-solid fa-file-invoice-dollar"></i> Cotações</a></li>
+            <li><a href="#"><i class="fa-solid fa-users"></i> Clientes</a></li>
+            <li><a href="#"><i class="fa-solid fa-building-shield"></i> Seguradoras</a></li>
+            <li><a href="#"><i class="fa-solid fa-chart-pie"></i> Relatórios</a></li>
+            <li class="active"><a href="#"><i class="fa-solid fa-user-tie"></i> Usuários</a></li>
+            <li><a href="#"><i class="fa-solid fa-gear"></i> Configurações</a></li>
+            <li class="logout"><a href="#"><i class="fa-solid fa-arrow-right-from-bracket"></i> Sair</a></li>
+        </ul>
+    </aside>
+
+    <main class="main-content">
+        <div class="content-wrapper">
+            
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                <h1 class="page-title">Usuários</h1>
+                <button class="btn-primary">
+                    <i class="fa-solid fa-plus"></i> Novo Usuário
+                </button>
+            </div>
+
+            <!-- Card com a Tabela de Usuários -->
+            <div class="users-card">
+                <table class="users-table">
+                    <thead>
+                        <tr>
+                            <th>Nome</th>
+                            <th>E-mail</th>
+                            <th>Perfil</th>
+                            <th>Status</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="font-weight: 600;">Corretor 1</td>
+                            <td style="color: #64748b;">corretor1@exemplo.com</td>
+                            <td>Corretor</td>
+                            <td><span class="badge ativa">Ativo</span></td>
+                            <td>
+                                <div class="action-btns">
+                                    <button class="btn-icon" title="Editar"><i class="fa-solid fa-pen"></i></button>
+                                    <button class="btn-icon delete" title="Excluir"><i class="fa-solid fa-trash"></i></button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="font-weight: 600;">Corretor 2</td>
+                            <td style="color: #64748b;">corretor2@exemplo.com</td>
+                            <td>Corretor</td>
+                            <td><span class="badge ativa">Ativo</span></td>
+                            <td>
+                                <div class="action-btns">
+                                    <button class="btn-icon" title="Editar"><i class="fa-solid fa-pen"></i></button>
+                                    <button class="btn-icon delete" title="Excluir"><i class="fa-solid fa-trash"></i></button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="font-weight: 600;">Administrador</td>
+                            <td style="color: #64748b;">admin@exemplo.com</td>
+                            <td>Administrador</td>
+                            <td><span class="badge ativa">Ativo</span></td>
+                            <td>
+                                <div class="action-btns">
+                                    <button class="btn-icon" title="Editar"><i class="fa-solid fa-pen"></i></button>
+                                    <button class="btn-icon delete" title="Excluir"><i class="fa-solid fa-trash"></i></button>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </main>
+
+</body>
+</html>

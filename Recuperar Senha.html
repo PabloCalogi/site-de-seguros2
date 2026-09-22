@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Varginha Seguros - Recuperar Senha</title>
+    <!-- Font Awesome para o ícone do logo -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Reset Básico */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: #f8f9fa; /* Fundo claro da imagem */
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        /* Container do Card Centralizado */
+        .recovery-card {
+            width: 100%;
+            max-width: 450px;
+            background: #ffffff;
+            padding: 3rem 2.5rem;
+            border-radius: 12px;
+            text-align: center;
+            /* Na imagem de referência, o card parece não ter sombra forte, misturando-se levemente com o fundo, 
+               mas adicionei uma borda sutil para delimitar o espaço */
+            border: 1px solid #eaeaea; 
+        }
+
+        /* Branding (Logo e Texto) */
+        .brand {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.8rem;
+            margin-bottom: 2rem;
+        }
+
+        .logo-icon {
+            font-size: 2.2rem;
+            color: #0033a0;
+        }
+
+        .brand-text {
+            text-align: left;
+        }
+
+        .brand-text h1 {
+            font-size: 1.3rem;
+            color: #002060;
+            line-height: 1;
+            letter-spacing: 0.5px;
+        }
+
+        .brand-text span {
+            font-size: 0.75rem;
+            color: #555;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+        }
+
+        /* Textos de Instrução */
+        .header-text h2 {
+            font-size: 1.25rem;
+            color: #1a1a1a;
+            margin-bottom: 1rem;
+        }
+
+        .header-text p {
+            color: #666;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            margin-bottom: 2rem;
+            padding: 0 1rem;
+        }
+
+        /* Formulário */
+        form {
+            text-align: left;
+        }
+
+        .input-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: #222;
+            margin-bottom: 0.5rem;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 0.9rem 1rem;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+
+        .input-group input:focus {
+            border-color: #0044cc;
+        }
+
+        /* Botão e Link */
+        .btn-primary {
+            width: 100%;
+            background-color: #0047cc;
+            color: white;
+            border: none;
+            padding: 1rem;
+            font-size: 1rem;
+            font-weight: bold;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-bottom: 2rem;
+        }
+
+        .btn-primary:hover {
+            background-color: #003399;
+        }
+
+        .back-link {
+            text-align: center;
+        }
+
+        .back-link a {
+            color: #0056b3;
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .back-link a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="recovery-card">
+        <!-- Logo -->
+        <div class="brand">
+            <i class="fa-solid fa-shield-halved logo-icon"></i>
+            <div class="brand-text">
+                <h1>VARGINHA</h1>
+                <span>SEGUROS</span>
+            </div>
+        </div>
+
+        <!-- Instruções -->
+        <div class="header-text">
+            <h2>Recuperar senha</h2>
+            <p>Digite seu e-mail e enviaremos um link para redefinir sua senha.</p>
+        </div>
+
+        <!-- Formulário -->
+        <form action="#" method="POST">
+            <div class="input-group">
+                <label for="email">E-mail</label>
+                <input type="email" id="email" name="email" placeholder="seu@email.com" required>
+            </div>
+
+            <button type="submit" class="btn-primary">Enviar link</button>
+        </form>
+
+        <!-- Voltar -->
+        <div class="back-link">
+            <a href="index.html">Voltar para o login</a>
+        </div>
+    </div>
+
+</body>
+</html>

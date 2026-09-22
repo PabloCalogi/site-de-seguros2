@@ -1,0 +1,158 @@
+/* ==========================================================
+   Estilos compartilhados: toasts, modais, estados vazios/loading
+   Incluir em toda página autenticada, depois do <style> próprio da página.
+   ========================================================== */
+
+#vs-toast-container {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.vs-toast {
+  min-width: 260px;
+  max-width: 360px;
+  padding: 14px 18px;
+  border-radius: 8px;
+  color: #fff;
+  font-size: 0.9rem;
+  font-weight: 600;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  opacity: 0;
+  transform: translateX(20px);
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+.vs-toast.show { opacity: 1; transform: translateX(0); }
+.vs-toast-success { background-color: #05cd99; }
+.vs-toast-error { background-color: #e53e3e; }
+.vs-toast-info { background-color: #4318ff; }
+
+.vs-modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(11, 20, 55, 0.55);
+  z-index: 1000;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+.vs-modal-overlay.open { display: flex; }
+
+.vs-modal-card {
+  background: #fff;
+  border-radius: 14px;
+  width: 100%;
+  max-width: 560px;
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: 2rem;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+}
+
+.vs-modal-card h2 {
+  margin-bottom: 1.5rem;
+  color: #1a1a2e;
+  font-size: 1.3rem;
+}
+
+.vs-modal-close {
+  float: right;
+  cursor: pointer;
+  color: #a3aed0;
+  font-size: 1.1rem;
+}
+
+.vs-form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+.vs-form-grid .full { grid-column: 1 / -1; }
+
+.vs-field { margin-bottom: 1rem; }
+.vs-field label {
+  display: block;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #2b3674;
+  margin-bottom: 0.4rem;
+}
+.vs-field input,
+.vs-field select,
+.vs-field textarea {
+  width: 100%;
+  padding: 0.7rem 0.9rem;
+  border: 1px solid #e0e5f2;
+  border-radius: 8px;
+  font-size: 0.92rem;
+  font-family: inherit;
+  outline: none;
+}
+.vs-field input:focus,
+.vs-field select:focus,
+.vs-field textarea:focus { border-color: #4318ff; }
+
+.vs-modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+}
+
+.vs-btn {
+  padding: 0.75rem 1.4rem;
+  border-radius: 8px;
+  border: none;
+  font-weight: 700;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+.vs-btn-primary { background: #4318ff; color: #fff; }
+.vs-btn-primary:hover { background: #3311d1; }
+.vs-btn-secondary { background: #f4f7fe; color: #2b3674; }
+.vs-btn-secondary:hover { background: #e9edfb; }
+.vs-btn-danger { background: #e53e3e; color: #fff; }
+.vs-btn-danger:hover { background: #c53030; }
+.vs-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+.vs-empty-state {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: #a3aed0;
+}
+.vs-empty-state i { font-size: 2.2rem; margin-bottom: 0.75rem; display: block; }
+
+.vs-error-text {
+  color: #e53e3e;
+  font-size: 0.85rem;
+  margin-top: 0.5rem;
+}
+
+.vs-skeleton-row td {
+  color: #a3aed0 !important;
+  text-align: center;
+  padding: 1.5rem !important;
+}
+
+.vs-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.6rem;
+  margin-top: 1rem;
+  font-size: 0.85rem;
+  color: #2b3674;
+}
+.vs-pagination button {
+  border: 1px solid #e0e5f2;
+  background: #fff;
+  border-radius: 6px;
+  padding: 0.4rem 0.8rem;
+  cursor: pointer;
+}
+.vs-pagination button:disabled { opacity: 0.4; cursor: not-allowed; }

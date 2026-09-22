@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Varginha Seguros - Dashboard</title>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: #f4f7fe;
+            display: flex;
+            min-height: 100vh;
+            color: #1b2559;
+        }
+
+        /* --- Sidebar --- */
+        .sidebar {
+            width: 260px;
+            background-color: #0b1437;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            padding: 2rem 1.5rem;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 3rem;
+            padding-left: 10px;
+        }
+
+        .brand i {
+            font-size: 1.8rem;
+        }
+
+        .brand h2 {
+            font-size: 1.2rem;
+            line-height: 1;
+        }
+
+        .brand span {
+            font-size: 0.7rem;
+            color: #a3aed0;
+            letter-spacing: 1px;
+        }
+
+        .nav-links {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            flex: 1;
+        }
+
+        .nav-links li a {
+            color: #a3aed0;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 12px 15px;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .nav-links li a:hover, .nav-links li.active a {
+            background-color: #1b2559;
+            color: #ffffff;
+        }
+
+        .nav-links li.active a {
+            background-color: #4318ff;
+        }
+
+        .logout {
+            margin-top: auto;
+        }
+
+        /* --- Main Content --- */
+        .main-content {
+            flex: 1;
+            padding: 2rem 3rem;
+            overflow-y: auto;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .header h1 {
+            font-size: 1.8rem;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            background: #fff;
+            padding: 8px 20px;
+            border-radius: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background-color: #e2e8f0;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #4318ff;
+        }
+
+        .user-info p {
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .user-info span {
+            font-size: 0.75rem;
+            color: #a3aed0;
+        }
+
+        /* --- Cards Row --- */
+        .cards-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .card {
+            background: #fff;
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+        }
+
+        .card h3 {
+            font-size: 0.8rem;
+            color: #a3aed0;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+
+        .card .value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .card .status {
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .status.positive { color: #05cd99; }
+        .status.neutral { color: #a3aed0; }
+
+        /* --- Charts Row --- */
+        .charts-row {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .chart-card {
+            background: #fff;
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+        }
+
+        .chart-card h3 {
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 250px;
+            width: 100%;
+        }
+
+        /* --- Bottom Row --- */
+        .bottom-row {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 1.5rem;
+        }
+
+        .table-card {
+            background: #fff;
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+        }
+
+        .table-card h3 {
+            margin-bottom: 1.5rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 12px 10px;
+            text-align: left;
+            font-size: 0.9rem;
+            border-bottom: 1px solid #f4f7fe;
+        }
+
+        .badge {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .badge.concluida {
+            background-color: #e6fcf5;
+            color: #05cd99;
+        }
+
+        .badge.andamento {
+            background-color: #fff8e1;
+            color: #ff9800;
+        }
+
+        .integration-card {
+            background: #fff;
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .integration-card .flex-between {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-top: 2rem;
+        }
+
+        .integration-card .value {
+            font-size: 2.5rem;
+            font-weight: 700;
+        }
+
+        .btn-blue {
+            background-color: #4318ff;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="brand">
+            <i class="fa-solid fa-shield-halved"></i>
+            <div>
+                <h2>VARGINHA</h2>
+                <span>SEGUROS</span>
+            </div>
+        </div>
+        <ul class="nav-links">
+            <li class="active"><a href="#"><i class="fa-solid fa-house"></i> Dashboard</a></li>
+            <li><a href="#"><i class="fa-solid fa-plus"></i> Nova Cotação</a></li>
+            <li><a href="#"><i class="fa-solid fa-file-invoice-dollar"></i> Cotações</a></li>
+            <li><a href="#"><i class="fa-solid fa-users"></i> Clientes</a></li>
+            <li><a href="#"><i class="fa-solid fa-building-shield"></i> Seguradoras</a></li>
+            <li><a href="#"><i class="fa-solid fa-chart-pie"></i> Relatórios</a></li>
+            <li><a href="#"><i class="fa-solid fa-user-tie"></i> Usuários</a></li>
+            <li><a href="#"><i class="fa-solid fa-gear"></i> Configurações</a></li>
+            <li class="logout"><a href="#"><i class="fa-solid fa-arrow-right-from-bracket"></i> Sair</a></li>
+        </ul>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Header -->
+        <header class="header">
+            <h1>Dashboard</h1>
+            <div class="user-profile">
+                <div class="user-avatar">
+                    <i class="fa-solid fa-user"></i>
+                </div>
+                <div class="user-info">
+                    <p>Olá, Pablo Henrique Silva Calogi</p>
+                    <span>Corretor</span>
+                </div>
+                <i class="fa-solid fa-chevron-down" style="color: #a3aed0; font-size: 0.8rem; margin-left: 10px;"></i>
+            </div>
+        </header>
+
+        <!-- KPI Cards -->
+        <div class="cards-row">
+            <div class="card">
+                <h3>Cotações Realizadas</h3>
+                <div class="value">128</div>
+                <div class="status positive"><i class="fa-solid fa-arrow-trend-up"></i> +13% este mês</div>
+            </div>
+            <div class="card">
+                <h3>Em Andamento</h3>
+                <div class="value">12</div>
+                <div class="status neutral">Aguardando retorno</div>
+            </div>
+            <div class="card">
+                <h3>Concluídas</h3>
+                <div class="value">116</div>
+                <div class="status positive"><i class="fa-solid fa-arrow-trend-up"></i> +10% este mês</div>
+            </div>
+            <div class="card">
+                <h3>Valor Médio</h3>
+                <div class="value">R$ 2.846,50</div>
+                <div class="status neutral">das cotações</div>
+            </div>
+        </div>
+
+        <!-- Charts Row -->
+        <div class="charts-row">
+            <!-- Line Chart -->
+            <div class="chart-card">
+                <h3>Cotações por mês</h3>
+                <div class="chart-container">
+                    <canvas id="lineChart"></canvas>
+                </div>
+            </div>
+            <!-- Donut Chart -->
+            <div class="chart-card">
+                <h3>Cotações por seguradora</h3>
+                <div class="chart-container">
+                    <canvas id="donutChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom Row -->
+        <div class="bottom-row">
+            <!-- Table -->
+            <div class="table-card">
+                <h3>Últimas cotações</h3>
+                <table>
+                    <tbody>
+                        <tr>
+                            <td><i class="fa-brands fa-diaspora" style="color:#4318ff"></i> João da Silva</td>
+                            <td style="color: #a3aed0;">15/06/2024</td>
+                            <td style="font-weight: 600;">R$ 2.450,00</td>
+                            <td><span class="badge concluida">Concluída</span></td>
+                        </tr>
+                        <tr>
+                            <td><i class="fa-solid fa-shield" style="color:#05cd99"></i> Marta Oliveira</td>
+                            <td style="color: #a3aed0;">15/06/2024</td>
+                            <td style="font-weight: 600;">R$ 3.120,00</td>
+                            <td><span class="badge concluida">Concluída</span></td>
+                        </tr>
+                        <tr>
+                            <td><i class="fa-solid fa-car" style="color:#4318ff"></i> Pedro Santos</td>
+                            <td style="color: #a3aed0;">15/06/2024</td>
+                            <td style="font-weight: 600;">-</td>
+                            <td><span class="badge andamento">Em andamento</span></td>
+                        </tr>
+                        <tr>
+                            <td><i class="fa-solid fa-house" style="color:#05cd99"></i> Ana Paula</td>
+                            <td style="color: #a3aed0;">14/06/2024</td>
+                            <td style="font-weight: 600;">R$ 2.850,00</td>
+                            <td><span class="badge concluida">Concluída</span></td>
+                        </tr>
+                        <tr>
+                            <td><i class="fa-solid fa-motorcycle" style="color:#05cd99"></i> Carlos Eduardo</td>
+                            <td style="color: #a3aed0;">14/06/2024</td>
+                            <td style="font-weight: 600;">R$ 1.980,00</td>
+                            <td><span class="badge concluida">Concluída</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Integration Card -->
+            <div class="integration-card">
+                <h3>Seguradoras integradas</h3>
+                <div class="flex-between">
+                    <div>
+                        <div class="value">6</div>
+                        <div style="color: #a3aed0; font-weight: 500;">Ativas</div>
+                    </div>
+                    <button class="btn-blue">Ver Todas</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Scripts para os Gráficos -->
+    <script>
+        // Gráfico de Linha (Cotações por Mês)
+        const ctxLine = document.getElementById('lineChart').getContext('2d');
+        
+        // Criando um gradiente para o fundo do gráfico de linha
+        let gradientFill = ctxLine.createLinearGradient(0, 0, 0, 250);
+        gradientFill.addColorStop(0, 'rgba(67, 24, 255, 0.2)');
+        gradientFill.addColorStop(1, 'rgba(67, 24, 255, 0)');
+
+        new Chart(ctxLine, {
+            type: 'line',
+            data: {
+                labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun'],
+                datasets: [{
+                    label: 'Cotações',
+                    data: [30, 110, 80, 160, 115, 180],
+                    borderColor: '#4318ff',
+                    backgroundColor: gradientFill,
+                    borderWidth: 3,
+                    pointBackgroundColor: '#4318ff',
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 2,
+                    pointRadius: 4,
+                    fill: true,
+                    tension: 0.4 // Suaviza a linha (curva)
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 200,
+                        grid: { borderDash: [5, 5], color: '#f4f7fe' },
+                        border: { display: false }
+                    },
+                    x: {
+                        grid: { display: false },
+                        border: { display: false }
+                    }
+                }
+            }
+        });
+
+        // Gráfico de Rosca (Cotações por Seguradora)
+        const ctxDonut = document.getElementById('donutChart').getContext('2d');
+        new Chart(ctxDonut, {
+            type: 'doughnut',
+            data: {
+                labels: ['Seguradora A', 'Seguradora B', 'Seguradora C', 'Seguradora D'],
+                datasets: [{
+                    data: [35, 28, 22, 15],
+                    backgroundColor: ['#1e40af', '#05cd99', '#ff9800', '#3b82f6'],
+                    borderWidth: 0,
+                    hoverOffset: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '70%', // Espessura da rosca
+                plugins: {
+                    legend: {
+                        position: 'right',
+                        labels: {
+                            usePointStyle: true,
+                            padding: 20,
+                            font: { family: "'Segoe UI', sans-serif", size: 13 }
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

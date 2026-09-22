@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Varginha Seguros - Detalhes da Cotação</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
+        body { background-color: #f4f7fe; display: flex; min-height: 100vh; color: #1b2559; }
+
+        /* --- Sidebar --- */
+        .sidebar { width: 260px; background-color: #0b1437; color: #fff; display: flex; flex-direction: column; padding: 2rem 1.5rem; flex-shrink: 0; }
+        .brand { display: flex; align-items: center; gap: 10px; margin-bottom: 3rem; padding-left: 10px; }
+        .brand i { font-size: 1.8rem; }
+        .brand h2 { font-size: 1.2rem; line-height: 1; }
+        .brand span { font-size: 0.7rem; color: #a3aed0; letter-spacing: 1px; }
+        .nav-links { list-style: none; display: flex; flex-direction: column; gap: 0.5rem; flex: 1; }
+        .nav-links li a { color: #a3aed0; text-decoration: none; display: flex; align-items: center; gap: 15px; padding: 12px 15px; border-radius: 8px; font-weight: 500; transition: all 0.3s; }
+        .nav-links li a:hover, .nav-links li.active a { background-color: #1b2559; color: #ffffff; }
+        .nav-links li.active a { background-color: #4318ff; }
+        .logout { margin-top: auto; }
+
+        /* --- Main Content --- */
+        .main-content { flex: 1; padding: 2rem 3rem; overflow-y: auto; }
+        .content-wrapper { width: 100%; max-width: 1050px; margin: 0 auto; }
+
+        /* --- Header da Página --- */
+        .page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
+        .page-title { font-size: 1.2rem; color: #1b2559; font-weight: 700; text-transform: uppercase; }
+        
+        .badge-concluida {
+            background-color: #e6fcf5;
+            color: #05cd99;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .btn-back {
+            background: transparent;
+            color: #0047cc;
+            border: 1px solid #e2e8f0;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 1.5rem;
+            transition: 0.3s;
+        }
+        .btn-back:hover { background: #f4f7fe; border-color: #0047cc; }
+
+        /* --- Card de Detalhes --- */
+        .details-card { background: #fff; border-radius: 16px; padding: 2rem; box-shadow: 0 4px 15px rgba(0,0,0,0.02); width: 100%; }
+
+        .details-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .detail-box {
+            background: #fafbfc;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 1.5rem;
+        }
+
+        .detail-box h3 {
+            font-size: 1rem;
+            color: #1b2559;
+            font-weight: 700;
+            margin-bottom: 1.2rem;
+        }
+
+        .detail-box p {
+            font-size: 0.9rem;
+            color: #2b3674;
+            margin-bottom: 0.7rem;
+        }
+
+        .detail-box strong {
+            font-weight: 600;
+            color: #1b2559;
+        }
+
+        /* --- Coberturas Inclusas --- */
+        .coverages-section {
+            background: #fafbfc;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .coverages-section h3 {
+            font-size: 1rem;
+            color: #1b2559;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .coverages-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+        }
+
+        .coverage-badge {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+            color: #2b3674;
+            font-weight: 500;
+        }
+
+        .coverage-badge i {
+            color: #0047cc;
+            font-size: 1rem;
+        }
+
+        /* --- Ações do Rodapé --- */
+        .card-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid #e2e8f0;
+            padding-top: 1.5rem;
+        }
+
+        .btn {
+            padding: 0.8rem 2rem;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: 0.3s;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-outline {
+            background: #fff;
+            color: #0047cc;
+            border: 1px solid #e2e8f0;
+        }
+        .btn-outline:hover { background: #f4f7fe; }
+
+        .btn-success {
+            background: #047857;
+            color: #fff;
+        }
+        .btn-success:hover { background: #065f46; }
+
+        @media (max-width: 900px) {
+            .details-grid { grid-template-columns: 1fr; }
+            .card-actions { flex-direction: column; gap: 1rem; width: 100%; }
+            .card-actions button { width: 100%; justify-content: center; }
+        }
+    </style>
+</head>
+<body>
+
+    <aside class="sidebar">
+        <div class="brand">
+            <i class="fa-solid fa-shield-halved"></i>
+            <div>
+                <h2>VARGINHA</h2>
+                <span>SEGUROS</span>
+            </div>
+        </div>
+        <ul class="nav-links">
+            <li><a href="#"><i class="fa-solid fa-house"></i> Dashboard</a></li>
+            <li><a href="#"><i class="fa-solid fa-plus"></i> Nova Cotação</a></li>
+            <li class="active"><a href="#"><i class="fa-solid fa-file-invoice-dollar"></i> Cotações</a></li>
+            <li><a href="#"><i class="fa-solid fa-users"></i> Clientes</a></li>
+            <li><a href="#"><i class="fa-solid fa-building-shield"></i> Seguradoras</a></li>
+            <li><a href="#"><i class="fa-solid fa-chart-pie"></i> Relatórios</a></li>
+            <li><a href="#"><i class="fa-solid fa-user-tie"></i> Usuários</a></li>
+            <li><a href="#"><i class="fa-solid fa-gear"></i> Configurações</a></li>
+            <li class="logout"><a href="#"><i class="fa-solid fa-arrow-right-from-bracket"></i> Sair</a></li>
+        </ul>
+    </aside>
+
+    <main class="main-content">
+        <div class="content-wrapper">
+            
+            <div class="page-header">
+                <h1 class="page-title">DETALHES DA COTAÇÃO</h1>
+                <span class="badge-concluida">Concluída</span>
+            </div>
+
+            <button class="btn-back"><i class="fa-solid fa-arrow-left"></i> Voltar</button>
+
+            <div class="details-card">
+                
+                <div class="details-grid">
+                    <!-- Dados da Cotação -->
+                    <div class="detail-box">
+                        <h3>Dados da Cotação</h3>
+                        <p><strong>ID de Cotação:</strong> #COT12345</p>
+                        <p><strong>Data:</strong> 15/06/2024 14:30</p>
+                        <p><strong>Cliente:</strong> João da Silva</p>
+                        <p><strong>CPF:</strong> 123.456.789-00</p>
+                        <p><strong>Veículo:</strong> Toyota Corolla XEi 2.0 Flex</p>
+                        <p><strong>Placa:</strong> ABC1D23</p>
+                        <p><strong>Uso:</strong> Particular</p>
+                        <p><strong>CEP Pernoite:</strong> 37000-000</p>
+                    </div>
+
+                    <!-- Resumo da Melhor Proposta -->
+                    <div class="detail-box">
+                        <h3>Resumo da Melhor Proposta</h3>
+                        <p><strong>Seguradora:</strong> Seguradora A</p>
+                        <p><strong>Plano:</strong> Completo</p>
+                        <p><strong>Cobertura:</strong> Completa</p>
+                        <p><strong>Franquia:</strong> R$ 2.000,00</p>
+                        <p><strong>Valor Anual:</strong> R$ 2.850,00</p>
+                        <p><strong>Parcelamento:</strong> 12x de R$ 237,50</p>
+                    </div>
+                </div>
+
+                <!-- Coberturas Inclusas -->
+                <div class="coverages-section">
+                    <h3>Coberturas Inclusas</h3>
+                    <div class="coverages-grid">
+                        <div class="coverage-badge"><i class="fa-solid fa-shield"></i> Compreensiva</div>
+                        <div class="coverage-badge"><i class="fa-solid fa-shield"></i> Roubo e Furto</div>
+                        <div class="coverage-badge"><i class="fa-solid fa-shield"></i> Incêndio</div>
+                        <div class="coverage-badge"><i class="fa-solid fa-shield"></i> Danos a Terceiros</div>
+                        <div class="coverage-badge"><i class="fa-solid fa-shield"></i> Vidros</div>
+                        <div class="coverage-badge"><i class="fa-solid fa-shield"></i> Assistência 24h</div>
+                    </div>
+                </div>
+
+                <!-- Ações do Rodapé -->
+                <div class="card-actions">
+                    <button class="btn btn-outline"><i class="fa-solid fa-plus"></i> Nova Cotação</button>
+                    <button class="btn btn-outline"><i class="fa-solid fa-print"></i> Imprimir / PDF</button>
+                    <button class="btn btn-success"><i class="fa-solid fa-envelope"></i> Enviar ao Cliente</button>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+</body>
+</html>

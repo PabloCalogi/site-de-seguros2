@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Varginha Seguros - Relatórios</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
+        body { background-color: #f4f7fe; display: flex; min-height: 100vh; color: #1b2559; }
+
+        /* --- Sidebar --- */
+        .sidebar { width: 260px; background-color: #0b1437; color: #fff; display: flex; flex-direction: column; padding: 2rem 1.5rem; flex-shrink: 0; }
+        .brand { display: flex; align-items: center; gap: 10px; margin-bottom: 3rem; padding-left: 10px; }
+        .brand i { font-size: 1.8rem; }
+        .brand h2 { font-size: 1.2rem; line-height: 1; }
+        .brand span { font-size: 0.7rem; color: #a3aed0; letter-spacing: 1px; }
+        .nav-links { list-style: none; display: flex; flex-direction: column; gap: 0.5rem; flex: 1; }
+        .nav-links li a { color: #a3aed0; text-decoration: none; display: flex; align-items: center; gap: 15px; padding: 12px 15px; border-radius: 8px; font-weight: 500; transition: all 0.3s; }
+        .nav-links li a:hover, .nav-links li.active a { background-color: #1b2559; color: #ffffff; }
+        .nav-links li.active a { background-color: #4318ff; }
+        .logout { margin-top: auto; }
+
+        /* --- Main Content --- */
+        .main-content { flex: 1; padding: 2rem 3rem; overflow-y: auto; }
+        .content-wrapper { width: 100%; max-width: 1100px; margin: 0 auto; }
+        .page-title { font-size: 1.2rem; color: #1b2559; font-weight: 700; text-transform: uppercase; margin-bottom: 2rem; }
+
+        /* --- Grid de Relatórios --- */
+        .reports-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+        }
+
+        .report-card {
+            background: #fff;
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            gap: 1.5rem;
+            border: 1px solid #f1f5f9;
+        }
+
+        .report-content {
+            display: flex;
+            align-items: flex-start;
+            gap: 1.2rem;
+        }
+
+        .report-icon {
+            width: 50px;
+            height: 50px;
+            background-color: #f4f7fe;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #0047cc;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+
+        .report-info h3 {
+            font-size: 1.05rem;
+            color: #1b2559;
+            font-weight: 700;
+            margin-bottom: 0.4rem;
+        }
+
+        .report-info p {
+            font-size: 0.85rem;
+            color: #64748b;
+            line-height: 1.4;
+        }
+
+        /* Botão Gerar Relatório */
+        .btn-report {
+            align-self: flex-start;
+            background: #fff;
+            color: #0047cc;
+            border: 1px solid #e2e8f0;
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: 0.3s;
+        }
+        .btn-report:hover { background: #f4f7fe; border-color: #0047cc; }
+
+        /* Responsividade */
+        @media (max-width: 900px) {
+            .reports-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <aside class="sidebar">
+        <div class="brand">
+            <i class="fa-solid fa-shield-halved"></i>
+            <div>
+                <h2>VARGINHA</h2>
+                <span>SEGUROS</span>
+            </div>
+        </div>
+        <ul class="nav-links">
+            <li><a href="#"><i class="fa-solid fa-house"></i> Dashboard</a></li>
+            <li><a href="#"><i class="fa-solid fa-plus"></i> Nova Cotação</a></li>
+            <li><a href="#"><i class="fa-solid fa-file-invoice-dollar"></i> Cotações</a></li>
+            <li><a href="#"><i class="fa-solid fa-users"></i> Clientes</a></li>
+            <li><a href="#"><i class="fa-solid fa-building-shield"></i> Seguradoras</a></li>
+            <li class="active"><a href="#"><i class="fa-solid fa-chart-pie"></i> Relatórios</a></li>
+            <li><a href="#"><i class="fa-solid fa-user-tie"></i> Usuários</a></li>
+            <li><a href="#"><i class="fa-solid fa-gear"></i> Configurações</a></li>
+            <li class="logout"><a href="#"><i class="fa-solid fa-arrow-right-from-bracket"></i> Sair</a></li>
+        </ul>
+    </aside>
+
+    <main class="main-content">
+        <div class="content-wrapper">
+            
+            <h1 class="page-title">Relatórios</h1>
+
+            <div class="reports-grid">
+                <!-- Card 1: Resumo Geral -->
+                <div class="report-card">
+                    <div class="report-content">
+                        <div class="report-icon">
+                            <i class="fa-solid fa-chart-line"></i>
+                        </div>
+                        <div class="report-info">
+                            <h3>Resumo Geral</h3>
+                            <p>Total de cotações, valores e indicadores gerais.</p>
+                        </div>
+                    </div>
+                    <button class="btn-report">Gerar Relatório <i class="fa-solid fa-chevron-down" style="font-size: 0.75rem;"></i></button>
+                </div>
+
+                <!-- Card 2: Cotações por Período -->
+                <div class="report-card">
+                    <div class="report-content">
+                        <div class="report-icon">
+                            <i class="fa-solid fa-calendar-days"></i>
+                        </div>
+                        <div class="report-info">
+                            <h3>Cotações por Período</h3>
+                            <p>Relatório detalhado por período selecionado.</p>
+                        </div>
+                    </div>
+                    <button class="btn-report">Gerar Relatório <i class="fa-solid fa-chevron-down" style="font-size: 0.75rem;"></i></button>
+                </div>
+
+                <!-- Card 3: Performance Seguradoras -->
+                <div class="report-card">
+                    <div class="report-content">
+                        <div class="report-icon">
+                            <i class="fa-solid fa-building-shield"></i>
+                        </div>
+                        <div class="report-info">
+                            <h3>Performance Seguradoras</h3>
+                            <p>Compare o desempenho das seguradoras.</p>
+                        </div>
+                    </div>
+                    <button class="btn-report">Gerar Relatório <i class="fa-solid fa-chevron-down" style="font-size: 0.75rem;"></i></button>
+                </div>
+
+                <!-- Card 4: Cotações por Corretor -->
+                <div class="report-card">
+                    <div class="report-content">
+                        <div class="report-icon">
+                            <i class="fa-solid fa-user-tie"></i>
+                        </div>
+                        <div class="report-info">
+                            <h3>Cotações por Corretor</h3>
+                            <p>Relatório de desempenho dos corretores.</p>
+                        </div>
+                    </div>
+                    <button class="btn-report">Gerar Relatório <i class="fa-solid fa-chevron-down" style="font-size: 0.75rem;"></i></button>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+</body>
+</html>

@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Varginha Seguros - Nova Cotação (Resumo)</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
+        body { background-color: #f4f7fe; display: flex; min-height: 100vh; color: #1b2559; }
+
+        /* --- Sidebar --- */
+        .sidebar { width: 260px; background-color: #0b1437; color: #fff; display: flex; flex-direction: column; padding: 2rem 1.5rem; flex-shrink: 0; }
+        .brand { display: flex; align-items: center; gap: 10px; margin-bottom: 3rem; padding-left: 10px; }
+        .brand i { font-size: 1.8rem; }
+        .brand h2 { font-size: 1.2rem; line-height: 1; }
+        .brand span { font-size: 0.7rem; color: #a3aed0; letter-spacing: 1px; }
+        .nav-links { list-style: none; display: flex; flex-direction: column; gap: 0.5rem; flex: 1; }
+        .nav-links li a { color: #a3aed0; text-decoration: none; display: flex; align-items: center; gap: 15px; padding: 12px 15px; border-radius: 8px; font-weight: 500; transition: all 0.3s; }
+        .nav-links li a:hover, .nav-links li.active a { background-color: #1b2559; color: #ffffff; }
+        .nav-links li.active a { background-color: #4318ff; }
+        .logout { margin-top: auto; }
+
+        /* --- Main Content --- */
+        .main-content { flex: 1; padding: 2rem 3rem; overflow-y: auto; }
+        .content-wrapper { width: 100%; max-width: 900px; margin: 0 auto; }
+        .page-title { font-size: 1.2rem; color: #1b2559; margin-bottom: 2rem; font-weight: 700; text-transform: uppercase; }
+
+        /* --- Wizard Card --- */
+        .wizard-card { background: #fff; border-radius: 16px; padding: 2.5rem; box-shadow: 0 4px 15px rgba(0,0,0,0.02); width: 100%; }
+
+        /* --- Progress Bar --- */
+        .stepper-wrapper { display: flex; justify-content: space-between; margin-bottom: 3rem; position: relative; padding: 0 20px; }
+        .stepper-wrapper::before { content: ''; position: absolute; top: 15px; left: 5%; width: 90%; height: 2px; background: #e2e8f0; z-index: 1; }
+        .stepper-item { position: relative; z-index: 2; display: flex; flex-direction: column; align-items: center; gap: 8px; }
+        .step-counter { width: 32px; height: 32px; border-radius: 50%; background: #fff; border: 2px solid #e2e8f0; display: flex; justify-content: center; align-items: center; font-size: 0.9rem; font-weight: 600; color: #a3aed0; transition: 0.3s; }
+        
+        .stepper-item.active .step-counter { background: #0047cc; border-color: #0047cc; color: #fff; }
+        .stepper-item.active .step-name { color: #0047cc; }
+        .stepper-item.completed .step-counter { border-color: #0047cc; color: #0047cc; background: #fff; }
+        .step-name { font-size: 0.85rem; font-weight: 600; color: #a3aed0; }
+
+        /* --- Resumo da Cotação --- */
+        .section-title { font-size: 1.1rem; color: #1b2559; margin-bottom: 1.5rem; font-weight: 700; }
+        
+        .summary-container {
+            background: #fafbfc;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .summary-section h3 {
+            font-size: 0.95rem;
+            color: #1b2559;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .summary-section p {
+            font-size: 0.9rem;
+            color: #2b3674;
+            margin-bottom: 0.6rem;
+        }
+
+        .summary-section strong {
+            font-weight: 600;
+            margin-right: 4px;
+        }
+
+        .coverage-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0.6rem;
+        }
+
+        .coverage-list li {
+            font-size: 0.9rem;
+            color: #2b3674;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .coverage-list li i {
+            color: #64748b;
+            font-size: 1rem;
+        }
+
+        /* --- Botões --- */
+        .actions { display: flex; justify-content: space-between; margin-top: 1rem; }
+        .btn { padding: 0.8rem 2.5rem; border-radius: 6px; font-weight: 600; font-size: 0.95rem; cursor: pointer; transition: 0.3s; border: none; }
+        .btn-cancel { background: #fff; color: #0047cc; border: 1px solid #e2e8f0; }
+        .btn-cancel:hover { background: #f4f7fe; }
+        
+        /* Botão Verde Final */
+        .btn-success { background: #047857; color: #fff; }
+        .btn-success:hover { background: #065f46; }
+
+        @media (max-width: 768px) {
+            .summary-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <aside class="sidebar">
+        <div class="brand">
+            <i class="fa-solid fa-shield-halved"></i>
+            <div>
+                <h2>VARGINHA</h2>
+                <span>SEGUROS</span>
+            </div>
+        </div>
+        <ul class="nav-links">
+            <li><a href="#"><i class="fa-solid fa-house"></i> Dashboard</a></li>
+            <li class="active"><a href="#"><i class="fa-solid fa-plus"></i> Nova Cotação</a></li>
+            <li><a href="#"><i class="fa-solid fa-file-invoice-dollar"></i> Cotações</a></li>
+            <li><a href="#"><i class="fa-solid fa-users"></i> Clientes</a></li>
+            <li><a href="#"><i class="fa-solid fa-building-shield"></i> Seguradoras</a></li>
+            <li><a href="#"><i class="fa-solid fa-chart-pie"></i> Relatórios</a></li>
+            <li><a href="#"><i class="fa-solid fa-user-tie"></i> Usuários</a></li>
+            <li><a href="#"><i class="fa-solid fa-gear"></i> Configurações</a></li>
+            <li class="logout"><a href="#"><i class="fa-solid fa-arrow-right-from-bracket"></i> Sair</a></li>
+        </ul>
+    </aside>
+
+    <main class="main-content">
+        <div class="content-wrapper">
+            
+            <h1 class="page-title">NOVA COTAÇÃO - RESUMO</h1>
+
+            <div class="wizard-card">
+                
+                <div class="stepper-wrapper">
+                    <div class="stepper-item completed">
+                        <div class="step-counter"><i class="fa-solid fa-check"></i></div>
+                        <div class="step-name">Cliente</div>
+                    </div>
+                    <div class="stepper-item completed">
+                        <div class="step-counter"><i class="fa-solid fa-check"></i></div>
+                        <div class="step-name">Veículo</div>
+                    </div>
+                    <div class="stepper-item completed">
+                        <div class="step-counter"><i class="fa-solid fa-check"></i></div>
+                        <div class="step-name">Coberturas</div>
+                    </div>
+                    <div class="stepper-item active">
+                        <div class="step-counter">4</div>
+                        <div class="step-name">Resumo</div>
+                    </div>
+                </div>
+
+                <div class="summary-container">
+                    <h2 class="section-title">Resumo da Cotação</h2>
+                    
+                    <div class="summary-grid">
+                        <div class="summary-section">
+                            <h3>Dados do Cliente</h3>
+                            <p><strong>Nome:</strong> João da Silva</p>
+                            <p><strong>CPF:</strong> 123.456.789-00</p>
+                            <p><strong>Telefone:</strong> (35) 99999-9999</p>
+                            <p><strong>E-mail:</strong> joao@email.com</p>
+                            <p><strong>CEP:</strong> 37000-000</p>
+                        </div>
+                        
+                        <div class="summary-section">
+                            <h3>Dados do Veículo</h3>
+                            <p><strong>Placa:</strong> ABC1D23</p>
+                            <p><strong>Veículo:</strong> Toyota Corolla XEi 2.0 Flex</p>
+                            <p><strong>Ano Fabricação/Modelo:</strong> 2020 / 2020</p>
+                            <p><strong>Uso:</strong> Particular</p>
+                            <p><strong>CEP de Pernoite:</strong> 37000-000</p>
+                        </div>
+                    </div>
+
+                    <div class="summary-section">
+                        <h3>Coberturas Selecionadas</h3>
+                        <ul class="coverage-list">
+                            <li><i class="fa-regular fa-circle-check"></i> Compreensiva</li>
+                            <li><i class="fa-regular fa-circle-check"></i> Roubo e Furto</li>
+                            <li><i class="fa-regular fa-circle-check"></i> Incêndio</li>
+                            <li><i class="fa-regular fa-circle-check"></i> Danos a Terceiros</li>
+                            <li><i class="fa-regular fa-circle-check"></i> Vidros</li>
+                            <li><i class="fa-regular fa-circle-check"></i> Assistência 24h</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="actions">
+                    <button type="button" class="btn btn-cancel">Voltar</button>
+                    <button type="button" class="btn btn-success">Buscar Cotações</button>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+</body>
+</html>

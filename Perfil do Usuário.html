@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Varginha Seguros - Perfil do Usuário</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
+        body { background-color: #f4f7fe; display: flex; min-height: 100vh; color: #1b2559; }
+
+        /* --- Sidebar --- */
+        .sidebar { width: 260px; background-color: #0b1437; color: #fff; display: flex; flex-direction: column; padding: 2rem 1.5rem; flex-shrink: 0; }
+        .brand { display: flex; align-items: center; gap: 10px; margin-bottom: 3rem; padding-left: 10px; }
+        .brand i { font-size: 1.8rem; }
+        .brand h2 { font-size: 1.2rem; line-height: 1; }
+        .brand span { font-size: 0.7rem; color: #a3aed0; letter-spacing: 1px; }
+        .nav-links { list-style: none; display: flex; flex-direction: column; gap: 0.5rem; flex: 1; }
+        .nav-links li a { color: #a3aed0; text-decoration: none; display: flex; align-items: center; gap: 15px; padding: 12px 15px; border-radius: 8px; font-weight: 500; transition: all 0.3s; }
+        .nav-links li a:hover, .nav-links li.active a { background-color: #1b2559; color: #ffffff; }
+        .nav-links li.active a { background-color: #4318ff; }
+        .logout { margin-top: auto; }
+
+        /* --- Main Content --- */
+        .main-content { flex: 1; padding: 2rem 3rem; overflow-y: auto; }
+        .content-wrapper { width: 100%; max-width: 1050px; margin: 0 auto; }
+        .page-title { font-size: 1.2rem; color: #1b2559; font-weight: 700; text-transform: uppercase; margin-bottom: 1.5rem; }
+
+        /* --- Abas de Navegação (Tabs) --- */
+        .tabs-nav {
+            display: flex;
+            gap: 2rem;
+            border-bottom: 1px solid #e2e8f0;
+            margin-bottom: 2rem;
+        }
+
+        .tab-item {
+            padding-bottom: 0.8rem;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #a3aed0;
+            text-decoration: none;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .tab-item.active {
+            color: #0047cc;
+        }
+
+        .tab-item.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background-color: #0047cc;
+            border-radius: 3px 3px 0 0;
+        }
+
+        /* --- Card do Perfil --- */
+        .profile-card {
+            background: #fff;
+            border-radius: 16px;
+            padding: 2.5rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+            width: 100%;
+        }
+
+        .profile-layout {
+            display: flex;
+            gap: 3rem;
+            align-items: flex-start;
+            margin-bottom: 2rem;
+        }
+
+        /* Coluna da Foto */
+        .avatar-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+            flex-shrink: 0;
+        }
+
+        .avatar-container {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background-color: #f4f7fe;
+            border: 2px solid #e2e8f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            color: #2b3674;
+            font-size: 4rem;
+            overflow: hidden;
+        }
+
+        .avatar-container i {
+            margin-top: 20px;
+        }
+
+        .avatar-badge {
+            position: absolute;
+            bottom: 8px;
+            right: 8px;
+            width: 28px;
+            height: 28px;
+            background-color: #0047cc;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 0.8rem;
+            border: 2px solid #fff;
+        }
+
+        .btn-avatar {
+            background: #fff;
+            color: #0047cc;
+            border: 1px solid #e2e8f0;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .btn-avatar:hover { background: #f4f7fe; border-color: #0047cc; }
+
+        /* Coluna do Formulário */
+        .form-grid-profile {
+            flex: 1;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.2rem;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .input-group.full-width {
+            grid-column: span 2;
+        }
+
+        .input-group label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #2b3674;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            outline: none;
+            color: #2b3674;
+            background-color: #fff;
+            transition: 0.3s;
+        }
+        .input-group input:focus { border-color: #0047cc; }
+        .input-group input::placeholder { color: #a3aed0; }
+
+        /* Botão Salvar */
+        .actions-footer {
+            display: flex;
+            justify-content: flex-end;
+            border-top: 1px solid #e2e8f0;
+            padding-top: 1.5rem;
+        }
+
+        .btn-save {
+            background-color: #0047cc;
+            color: #fff;
+            border: none;
+            padding: 0.8rem 2rem;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .btn-save:hover { background-color: #003399; }
+
+        /* Responsividade */
+        @media (max-width: 900px) {
+            .profile-layout { flex-direction: column; align-items: center; }
+            .form-grid-profile { grid-template-columns: 1fr; width: 100%; }
+            .input-group.full-width { grid-column: span 1; }
+        }
+    </style>
+</head>
+<body>
+
+    <aside class="sidebar">
+        <div class="brand">
+            <i class="fa-solid fa-shield-halved"></i>
+            <div>
+                <h2>VARGINHA</h2>
+                <span>SEGUROS</span>
+            </div>
+        </div>
+        <ul class="nav-links">
+            <li><a href="#"><i class="fa-solid fa-house"></i> Dashboard</a></li>
+            <li><a href="#"><i class="fa-solid fa-plus"></i> Nova Cotação</a></li>
+            <li><a href="#"><i class="fa-solid fa-file-invoice-dollar"></i> Cotações</a></li>
+            <li><a href="#"><i class="fa-solid fa-users"></i> Clientes</a></li>
+            <li><a href="#"><i class="fa-solid fa-building-shield"></i> Seguradoras</a></li>
+            <li><a href="#"><i class="fa-solid fa-chart-pie"></i> Relatórios</a></li>
+            <li><a href="#"><i class="fa-solid fa-user-tie"></i> Usuários</a></li>
+            <li class="active"><a href="#"><i class="fa-solid fa-gear"></i> Configurações</a></li>
+            <li class="logout"><a href="#"><i class="fa-solid fa-arrow-right-from-bracket"></i> Sair</a></li>
+        </ul>
+    </aside>
+
+    <main class="main-content">
+        <div class="content-wrapper">
+            
+            <h1 class="page-title">PERFIL DO USUÁRIO</h1>
+
+            <!-- Abas de Configuração / Perfil -->
+            <div class="tabs-nav">
+                <div class="tab-item active">Dados Pessoais</div>
+                <div class="tab-item">Alterar Senha</div>
+                <div class="tab-item">Preferências</div>
+            </div>
+
+            <div class="profile-card">
+                
+                <div class="profile-layout">
+                    <!-- Seção da Foto -->
+                    <div class="avatar-section">
+                        <div class="avatar-container">
+                            <i class="fa-solid fa-user"></i>
+                            <div class="avatar-badge"><i class="fa-solid fa-camera" style="font-size: 0.6rem;"></i></div>
+                        </div>
+                        <button class="btn-avatar">Alterar Foto</button>
+                    </div>
+
+                    <!-- Formulário de Dados -->
+                    <div class="form-grid-profile">
+                        <div class="input-group full-width">
+                            <label>Nome Completo</label>
+                            <input type="text" value="Corretor Varginha">
+                        </div>
+
+                        <div class="input-group">
+                            <label>Telefone</label>
+                            <input type="text" value="(35) 99999-9999">
+                        </div>
+
+                        <div class="input-group">
+                            <label>E-mail</label>
+                            <input type="email" value="corretor@varginhaseguros.com.br">
+                        </div>
+
+                        <div class="input-group full-width">
+                            <label>Corretora</label>
+                            <input type="text" value="Varginha Seguros">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Botão Salvar -->
+                <div class="actions-footer">
+                    <button class="btn-save">Salvar Alterações</button>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+</body>
+</html>
